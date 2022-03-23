@@ -14,8 +14,9 @@ pub(super) fn check_fn(
     kind: FnKind<'_>,
     span: Span,
     body: &hir::Body<'_>,
-    too_many_lines_threshold: u64,
 ) {
+    let too_many_lines_threshold = 2;
+
     // Closures must be contained in a parent body, which will be checked for `too_many_lines`.
     // Don't check closures for `too_many_lines` to avoid duplicated lints.
     if matches!(kind, FnKind::Closure) || in_external_macro(cx.sess(), span) {
