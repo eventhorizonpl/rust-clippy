@@ -58,6 +58,29 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
+    /// Checks for async functions without .await calls.
+    ///
+    /// ### Why is this bad?
+    /// Functions that are declared as async, but do not call
+    /// any other functions with .await have small performance
+    /// penalty.
+    ///
+    /// ### Example
+    /// ```rust
+    /// async fn i_do_not_have_wait_calls() {
+    ///     println!("");
+    ///     // ...
+    ///     println!("");
+    /// }
+    /// ```
+    #[clippy::version = "1.61.0"]
+    pub NEEDLESS_ASYNC,
+    perf,
+    "async functions without .await calls"
+}
+
+declare_clippy_lint! {
+    /// ### What it does
     /// Checks for public functions that dereference raw pointer
     /// arguments but are not marked `unsafe`.
     ///
@@ -234,6 +257,7 @@ impl Functions {
 impl_lint_pass!(Functions => [
     TOO_MANY_ARGUMENTS,
     TOO_MANY_LINES,
+    NEEDLESS_ASYNC,
     NOT_UNSAFE_PTR_ARG_DEREF,
     MUST_USE_UNIT,
     DOUBLE_MUST_USE,

@@ -7,7 +7,7 @@ use rustc_span::Span;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::source::snippet_opt;
 
-use super::TOO_MANY_LINES;
+use super::NEEDLESS_ASYNC;
 
 pub(super) fn check_fn(
     cx: &LateContext<'_>,
@@ -76,7 +76,7 @@ pub(super) fn check_fn(
     if line_count > too_many_lines_threshold {
         span_lint(
             cx,
-            TOO_MANY_LINES,
+            NEEDLESS_ASYNC,
             span,
             &format!(
                 "this function has too many lines ({}/{})",
