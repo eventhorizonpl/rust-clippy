@@ -15,8 +15,6 @@ pub(super) fn check_fn(
     span: Span,
     body: &hir::Body<'_>,
 ) {
-    let too_many_lines_threshold = 2;
-
     // Closures must be contained in a parent body, which will be checked for `too_many_lines`.
     // Don't check closures for `too_many_lines` to avoid duplicated lints.
     if matches!(kind, FnKind::Closure) || in_external_macro(cx.sess(), span) {
@@ -27,7 +25,7 @@ pub(super) fn check_fn(
         Some(s) => s,
         _ => return,
     };
-    let mut line_count: u64 = 0;
+    let mut await_count: u64 = 0;
     let mut in_comment = false;
     let mut code_in_line;
 
@@ -70,18 +68,19 @@ pub(super) fn check_fn(
             break;
         }
         if code_in_line {
-            line_count += 1;
+            if let Some(i) = line.find(".await") {
+                await_count += 1;
+            }
         }
     }
 
-    if line_count > too_many_lines_threshold {
+    if await_count == 0 {
         span_lint(
             cx,
             NEEDLESS_ASYNC,
             span,
             &format!(
-                "this function has too many lines ({}/{})",
-                line_count, too_many_lines_threshold
+                "this async function has no .await calls",
             ),
         );
     }
